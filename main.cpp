@@ -1,11 +1,5 @@
-#include "inc/Board.h"
-#include "inc/ships/Ship.h"
-#include "inc/ships/Battleship.h" 
-#include "inc/ships/Carrier.h" 
-#include "inc/ships/Destroyer.h" 
-#include "inc/ships/PatrolBoat.h" 
-#include "inc/ships/Submarine.h"
-
+#include "Game.h"
+#include "inc/Player.h"
 #include <iostream>
 #include <cmath>
 #include <cstring>
@@ -14,19 +8,35 @@
 using namespace std;
 
 int main() {
+
+  //startMenu();
   
-  Board playerBoard(10, 10);
+  //Player p1('h',"Test PLayer");
+
+
+  Board playerBoard(30, 30);
   
+  cout << playerBoard.convertNumberToLetters(29) << endl;
+  cout << playerBoard.convertLettersToNumbers("AI") << endl;
+
   playerBoard.printBoard(); 
   
   Battleship p1Battleship;
   Submarine p1Submarine;
+  Carrier p1Carrier;
+  Destroyer p1Destroyer;
+  PatrolBoat p1PatrolBoat;
 
-  playerBoard.placeShip(1, 2, 'h', p1Battleship);
+  playerBoard.placeShip(9, 6, 'v', p1Battleship);
   playerBoard.placeShip(6, 2, 'v', p1Submarine);
+  playerBoard.placeShip(2, 5, 'h', p1Carrier);
+  playerBoard.placeShip(7, 2, 'v', p1Destroyer);
+  playerBoard.placeShip(3, 4, 'h', p1PatrolBoat);
 
   playerBoard.printBoard();
-
+  
+  cout << "END";
+  
   return 0;
 
 }

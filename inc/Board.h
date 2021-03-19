@@ -4,8 +4,8 @@
 #include <cmath>
 #include <cstring>
 #include <vector>
-#include <map>
-#include <stdexcept>
+#include <stdio.h>
+#include <ctype.h>
 
 using namespace std;
 
@@ -17,10 +17,15 @@ class Board {
     string label;
     vector <vector<string>> boardRows;
     string emptyMarker = ".";
+    string hitMarker = "H";
+    string missMarker = "M";
 
   public:
+    //Default Constructor
+    Board() {
+    }
 
-    //Constructor
+    //Constructor - with width and height
     Board(int width, int height) {
       
       //Set width and height
@@ -88,9 +93,9 @@ class Board {
         //2 - Check that placing the ship does not overlap any other ships
         if(orientation == 'v'){
           
-          int xIndex = startX - 1;
+          int xIndex = startX;
 
-          for(int yIndex = startY - 1; yIndex < endY; yIndex++){
+          for(int yIndex = startY; yIndex <= endY; yIndex++){
 
             this->boardRows[yIndex][xIndex] = ship.getLabel();
 
@@ -99,9 +104,9 @@ class Board {
         }
         else if(orientation == 'h'){
           
-          int yIndex = startY - 1;
+          int yIndex = startY;
 
-          for( int xIndex = startX - 1; xIndex < endX; xIndex++){
+          for( int xIndex = startX; xIndex <= endX; xIndex++){
 
             this->boardRows[yIndex][xIndex] = ship.getLabel();
 
@@ -156,9 +161,9 @@ class Board {
       //2 - Check that placing the ship does not overlap any other ships
       if(orientation == 'v'){
         
-        int xIndex = startX - 1;
+        int xIndex = startX;
 
-        for( int yIndex = startY - 1; yIndex < endY; yIndex++){
+        for( int yIndex = startY; yIndex <= endY; yIndex++){
 
           string currentCoord = this->boardRows[yIndex][xIndex];
 
@@ -173,9 +178,9 @@ class Board {
       }
       else if(orientation == 'h'){
         
-        int yIndex = startY - 1;
+        int yIndex = startY;
         
-        for(int xIndex = startX - 1; xIndex < endX; xIndex++){
+        for(int xIndex = startX; xIndex <= endX; xIndex++){
 
           string currentCoord = this->boardRows[yIndex][xIndex];
 
@@ -195,11 +200,9 @@ class Board {
 
     bool boardPositionExists(int x, int y){
 
-      if(y >= 1 && y <= this->boardRows.size()){
+      if(y >= 0 && y <= this->boardRows.size()){
 
-        int yIndex = y - 1;
-
-        if(x >= 1 && x <= this->boardRows[yIndex].size()){
+        if(x >= 0 && x <= this->boardRows[y].size()){
           
           return true;
         
@@ -211,6 +214,93 @@ class Board {
 
     }
 
+    string getBoardPosition(int x, int y){
+      
+      if(this->boardPositionExists(x, y)){
+
+        return this->boardRows[y][x];
+
+      }else{
+
+        return "";
+      
+      }
+
+    }
+
+    bool setBoardPosition(int x, int y, string value){
+      
+      if(this->boardPositionExists(x, y)){
+
+        this->boardRows[y][x] = value;
+        
+        return true;
+
+      }else{
+
+        return false;
+      
+      }
+
+    }
+
+    string getEmptyMarker(){
+      
+      return this->emptyMarker;
+
+    }
+
+    string getMissMarker(){
+      
+      return this->missMarker;
+
+    }
+
+    string getHitMarker(){
+      
+      return this->hitMarker;
+
+    }
+
+    bool addMissedShot(int x, int y){
+
+      if(this->setBoardPosition(x, y, this->missMarker)){
+
+        return true;
+
+      }
+
+      return false;
+      
+    }
+
+    bool addHitShot(int x, int y){
+
+      if(this->setBoardPosition(x, y, this->hitMarker)){
+
+        return true;
+
+      }
+
+      return false;
+
+    }
+
+    bool isValidShot(int x, int y){
+
+      string shot = this->getBoardPosition(x, y);
+
+      if(shot != this->hitMarker && shot != this->missMarker && shot != ""){
+        
+        return true;
+      
+      }else{
+
+        return false;
+      
+      }
+
+    }
 
     //Prints the board to the console as a grid with letter labels for the cols and number labels for the rows
     bool printBoard() {
@@ -232,7 +322,7 @@ class Board {
             
             for(int col=0; col < currentRow.size(); col++) {
               
-              string currentLabel = convertNumberToLetters(col + 1);
+              string currentLabel = convertNumberToLetters(col);
 
               this->printStringValue(currentLabel);
 
@@ -265,6 +355,100 @@ class Board {
         return false;
 
       }
+
+    }
+
+    //Converts a coordinate e.g. A5 to either the X or Y index for the boardRows vector
+    int convertCoordinateToIndex(string coordinate, char type){
+      
+      bool alphaEnd = false;
+      string numbers = "";
+      string letters = "";
+      
+      for(int x = 0; x < coordinate.length(); x++){
+      
+        //Grab current coordinate
+        char currentChar = coordinate[x];
+
+        if(isalpha(currentChar) && alphaEnd == false){
+          
+          letters = letters + currentChar;
+        
+        }else if(isdigit(currentChar)){
+
+          //Once the first int has been encountered in the string there should be no more letters e.g. E5B6 is an invalid coordinate
+          if(alphaEnd == false){
+            
+            //Set alphaEnd to true to stop allowing any more letters and only allow numbers
+            alphaEnd = true;
+
+          }
+
+          numbers = numbers + currentChar;
+
+        }else{
+
+          //Unexpected char value not valid coordinate
+          return -1;
+
+        }
+
+      }
+
+      if(type == 'x' && numbers != ""){
+        
+        //-1 to make it an index
+        return stoi(numbers) - 1;
+       
+      }else if(type == 'y' && letters != ""){
+
+        return this->convertLettersToNumbers(letters);
+      
+      }
+
+      return -1;
+
+    }
+
+    //Make sure coordinate is in format A5, AA10, BC9
+    bool isValidCoordinate(string coordinate){
+
+      //Set alphaEnd to false - this will allow letter chars until the first number char is encountered then if another letter char is encountered
+      //after the first number char the coordinate is not valid
+      bool alphaEnd = false;
+
+      for(int x = 0; x < coordinate.length(); x++){
+        
+        //Grab current coordinate
+        char currentChar = coordinate[x];
+
+        if(isalpha(currentChar) && alphaEnd == false){
+          
+          //Do nothing and let loop continue
+
+        }
+        else if(isdigit(currentChar)){
+
+          //Once the first int has been encountered in the string there should be no more letters e.g. E5B6 is an invalid coordinate
+          if(alphaEnd == false){
+            
+            //Set alphaEnd to true to stop allowing any more letters and only allow numbers
+            alphaEnd = true;
+
+          }
+
+        }
+        else{
+
+          //Unexpected char value not valid coordinate
+          return false;
+
+        }
+
+      }
+
+      //All char values passed coordinate is valid
+      return true;
 
     }
 
@@ -362,10 +546,10 @@ class Board {
       }
 
     }
-    
-    string convertNumberToLetters(int number) {
 
-      string letters = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string convertNumberToLetters(int number) {
+      number++;
+      string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       string letterString = "";
 
       while(number >= 1){
@@ -381,14 +565,13 @@ class Board {
         
         };
         
-        letterString = letters.at(remainder) + letterString;
+        letterString = letters.at(remainder-1) + letterString;
       
       };
       
       return letterString;
 
     }
-
 
     //MIKE'S convert letters to numbers function
     int convertLettersToNumbers(string letters){

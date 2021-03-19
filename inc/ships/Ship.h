@@ -32,6 +32,11 @@ class Ship{
 
     }
 
+    void registerHit(){
+
+      this->hits++;
+
+    }
 
     int getSize(){
 
