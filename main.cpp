@@ -1,5 +1,4 @@
-#include "Game.h"
-#include "inc/Player.h"
+#include "inc/Game.h"
 #include <iostream>
 #include <cmath>
 #include <cstring>
@@ -7,36 +6,46 @@
 
 using namespace std;
 
-int main() {
-
-  //startMenu();
+void test() {
   
-  //Player p1('h',"Test PLayer");
+  //Create a Game
+  Game game;
 
+  Board testBoard = Board(10,10);
+  Ship testShip = Ship(5,"B");
+  string coordinate = "";
 
-  Board playerBoard(30, 30);
-  
-  cout << playerBoard.convertNumberToLetters(29) << endl;
-  cout << playerBoard.convertLettersToNumbers("AI") << endl;
+  int xIndex = testBoard.convertCoordinateToIndex(coordinate, 'x');
+  int yIndex = testBoard.convertCoordinateToIndex(coordinate, 'y');
 
-  playerBoard.printBoard(); 
-  
-  Battleship p1Battleship;
-  Submarine p1Submarine;
-  Carrier p1Carrier;
-  Destroyer p1Destroyer;
-  PatrolBoat p1PatrolBoat;
+  testBoard.placeShip(xIndex, yIndex, "h", testShip);
 
-  playerBoard.placeShip(9, 6, 'v', p1Battleship);
-  playerBoard.placeShip(6, 2, 'v', p1Submarine);
-  playerBoard.placeShip(2, 5, 'h', p1Carrier);
-  playerBoard.placeShip(7, 2, 'v', p1Destroyer);
-  playerBoard.placeShip(3, 4, 'h', p1PatrolBoat);
+  testBoard.printBoard();
 
-  playerBoard.printBoard();
-  
-  cout << "END";
-  
-  return 0;
+  cout << "xIndex: " << xIndex << " " << "yIndex: " << yIndex; 
+
+	Player test;
+	test.setFleetBoard(Board(10,10));
+	int i = 0;
+
+	while (i != 10){
+		i = test.randomXIndex();
+		cout << i;
+
+	}
 
 }
+
+int main() {
+
+  //Create a Game
+  Game game;
+  
+  game.run();
+  
+  //test();
+
+
+
+}
+

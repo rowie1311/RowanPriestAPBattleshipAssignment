@@ -1,5 +1,5 @@
 #pragma once
-#include "ships/Ship.h"
+#include "Ship.h"
 #include <iostream>
 #include <cmath>
 #include <cstring>
@@ -9,12 +9,12 @@
 
 using namespace std;
 
-class Board {
+class Board {//Create board class
   
-  private: 
-    int width;
-    int height; 
-    string label;
+  private: //private variables
+    int width; //width of board
+    int height; //height of board
+    string label; //labels for the side of the board
     vector <vector<string>> boardRows;
     string emptyMarker = ".";
     string hitMarker = "H";
@@ -22,8 +22,7 @@ class Board {
 
   public:
     //Default Constructor
-    Board() {
-    }
+    Board() {}
 
     //Constructor - with width and height
     Board(int width, int height) {
@@ -61,10 +60,10 @@ class Board {
 
     }
 
-    bool placeShip(int x, int y, char orientation, Ship ship){
+    bool placeShip(int x, int y, string direction, Ship ship){
 
-      if(this->checkShipPlacement(x, y, orientation, ship)){
-        
+      if(this->checkShipPlacement(x, y, direction, ship)){
+
         //Get the ship's length
         int shipLength = ship.getSize();
 
@@ -76,22 +75,22 @@ class Board {
         int endX;
         int endY;
 
-        //Get the end position - this depends on what orientation of the ship was Vertical or Horizontal
-        if(orientation == 'v'){
+        //Get the end position - this depends on what direction of the ship was Vertical or Horizontal
+        if(direction == "v"){
 
           endX = x; //When vertical the ship's ending x position stays the same
           endY = y + (shipLength - 1); //When vertical the ship's ending y position will be moved along the y axis based on it's length 
 
         }
-        else if(orientation == 'h'){
+        else if(direction == "h"){
 
           endX = x + (shipLength - 1); //When horizontal the ship's ending x position will be moved along the x axis based on it's length 
           endY = y; //When horizontal the ship's ending y position stays the same
 
         }
 
-        //2 - Check that placing the ship does not overlap any other ships
-        if(orientation == 'v'){
+        //2 - Place the Ship
+        if(direction == "v"){
           
           int xIndex = startX;
 
@@ -101,8 +100,9 @@ class Board {
 
           }
 
-        }
-        else if(orientation == 'h'){
+          return true;
+
+        }else if(direction == "h"){
           
           int yIndex = startY;
 
@@ -111,6 +111,8 @@ class Board {
             this->boardRows[yIndex][xIndex] = ship.getLabel();
 
           }
+
+          return true;
 
         }
         
@@ -121,7 +123,7 @@ class Board {
     }
 
     //Check's the placement of a ship on a board is valid
-    bool checkShipPlacement(int x, int y, char orientation, Ship ship){
+    bool checkShipPlacement(int x, int y, string direction, Ship ship){
 
       //Get the ship's length
       int shipLength = ship.getSize();
@@ -136,14 +138,14 @@ class Board {
       int endX;
       int endY;
 
-      //Get the end position - this depends on what orientation of the ship was Vertical or Horizontal
-      if(orientation == 'v'){
+      //Get the end position - this depends on what direction of the ship was Vertical or Horizontal
+      if(direction == "v"){
 
         endX = x; //When vertical the ship's ending x position stays the same
         endY = y + (shipLength - 1); //When vertical the ship's ending y position will be moved along the y axis based on it's length 
 
       }
-      else if(orientation == 'h'){
+      else if(direction == "h"){
 
         endX = x + (shipLength - 1); //When horizontal the ship's ending x position will be moved along the x axis based on it's length 
         endY = y; //When horizontal the ship's ending y position stays the same
@@ -159,7 +161,7 @@ class Board {
       }
 
       //2 - Check that placing the ship does not overlap any other ships
-      if(orientation == 'v'){
+      if(direction == "v"){
         
         int xIndex = startX;
 
@@ -176,7 +178,7 @@ class Board {
         }
 
       }
-      else if(orientation == 'h'){
+      else if(direction == "h"){
         
         int yIndex = startY;
         
@@ -200,9 +202,9 @@ class Board {
 
     bool boardPositionExists(int x, int y){
 
-      if(y >= 0 && y <= this->boardRows.size()){
+      if(y >= 0 && y < this->boardRows.size()){
 
-        if(x >= 0 && x <= this->boardRows[y].size()){
+        if(x >= 0 && x < this->boardRows[y].size()){
           
           return true;
         
@@ -395,12 +397,12 @@ class Board {
 
       }
 
-      if(type == 'x' && numbers != ""){
+      if(type == 'y' && numbers != ""){
         
         //-1 to make it an index
         return stoi(numbers) - 1;
        
-      }else if(type == 'y' && letters != ""){
+      }else if(type == 'x' && letters != ""){
 
         return this->convertLettersToNumbers(letters);
       
@@ -411,7 +413,18 @@ class Board {
     }
 
     //Make sure coordinate is in format A5, AA10, BC9
-    bool isValidCoordinate(string coordinate){
+    bool isValidCoordinateFormat(string coordinate){
+
+      //Make sure coordinate is not blank
+      if(coordinate == ""){
+
+        return false;
+
+      } 
+
+      //Coordinate must consist of letters and numbers
+      bool lettersFound = false;
+      bool numbersFound = false;
 
       //Set alphaEnd to false - this will allow letter chars until the first number char is encountered then if another letter char is encountered
       //after the first number char the coordinate is not valid
@@ -425,9 +438,9 @@ class Board {
         if(isalpha(currentChar) && alphaEnd == false){
           
           //Do nothing and let loop continue
-
-        }
-        else if(isdigit(currentChar)){
+          lettersFound = true;
+        
+        }else if(isdigit(currentChar)){
 
           //Once the first int has been encountered in the string there should be no more letters e.g. E5B6 is an invalid coordinate
           if(alphaEnd == false){
@@ -437,8 +450,9 @@ class Board {
 
           }
 
-        }
-        else{
+          numbersFound = true;
+
+        }else{
 
           //Unexpected char value not valid coordinate
           return false;
@@ -447,8 +461,17 @@ class Board {
 
       }
 
-      //All char values passed coordinate is valid
-      return true;
+      //All char values passed and atleast one number andd letter was found coordinate is valid
+      if(lettersFound && numbersFound){
+
+        return true;
+      
+      }
+      else{
+
+        return false;
+      
+      }
 
     }
 
@@ -548,7 +571,10 @@ class Board {
     }
 
     string convertNumberToLetters(int number) {
+      
+
       number++;
+
       string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       string letterString = "";
 
@@ -561,7 +587,7 @@ class Board {
         if (remainder == 0) {
           
           remainder = 26;
-          number = number-1;
+          number = number - 1;
         
         };
         
@@ -590,6 +616,30 @@ class Board {
 
       return -1; //no match
 
+    }
+
+		int getWidth(){
+
+      return this->width;
+    
+    }
+
+    void setWidth(int value){
+
+      this->width = value;
+    
+    }
+
+		int getHeight(){
+
+      return this->height;
+    
+    }
+
+    void setHeight(int value){
+      
+      this->height = value;
+    
     }
 
 };

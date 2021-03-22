@@ -1,44 +1,35 @@
 #pragma once
 #include "Board.h"
-#include "ships/Battleship.h" 
-#include "ships/Carrier.h" 
-#include "ships/Destroyer.h" 
-#include "ships/PatrolBoat.h" 
-#include "ships/Submarine.h"
+#include "Ship.h"
 
 #include <iostream>
 #include <cmath>
 #include <cstring>
 #include <vector>
+#include <time.h>  
 
 class Player{
   
   private:
-    char type;
+    string type;
     string name;
+    
+    int randomAttemptsLimit = 50;
     int shipCount = 5;
 
     //The players ships
-    Battleship battleship;
-    Carrier carrier;
-    Destroyer destroyer;
-    PatrolBoat patrolBoat;
-    Submarine submarine;
+    Ship battleship;
+    Ship carrier;
+    Ship destroyer;
+    Ship patrolBoat;
+    Ship submarine;
     
     Board fleetBoard;
     Board targetBoard;
   
   public:
-    Player(char type, string name){
-      
-      this->type = type;
-      this->name = name;
 
-      //Set up the boards
-      this->fleetBoard = Board(10, 10);
-      this->targetBoard = Board(10, 10);
-
-    }
+    Player(){};
 
     string handleShotFiredAt(int x, int y){
       
@@ -177,5 +168,387 @@ class Player{
       return false;
 
     }
+
+
+
+    void randomlyPlaceRemainingShips(){
+
+      while(this->battleship.getPlaced() == false && this->battleship.exists()){
+				
+				int xIndex = this->randomXIndex();
+				int yIndex = this->randomYIndex();
+				string direction = this->randomDirection();
+
+				//cout << "Attempting to place Battleship at (" << xIndex << ", " << yIndex << ") Direction: " << direction << endl;
+
+				if(this->fleetBoard.placeShip(xIndex, yIndex, direction, this->battleship)){
+
+					this->battleship.setPlaced(true);
+				
+				}
+
+      }
+
+      while(this->carrier.getPlaced() == false && this->carrier.exists()){
+        
+				int xIndex = this->randomXIndex();
+				int yIndex = this->randomYIndex();
+				string direction = this->randomDirection();
+
+				//cout << "Attempting to place Carrier at (" << xIndex << ", " << yIndex << ") Direction: " << direction << endl;
+
+				if(this->fleetBoard.placeShip(xIndex, yIndex, direction, this->carrier)){
+
+					this->carrier.setPlaced(true);
+				
+				}
+
+      }
+
+      while(this->destroyer.getPlaced() == false && this->destroyer.exists()){
+
+				int xIndex = this->randomXIndex();
+				int yIndex = this->randomYIndex();
+				string direction = this->randomDirection();
+
+				//cout << "Attempting to place Destroyer at (" << xIndex << ", " << yIndex << ") Direction: " << direction << endl;
+
+				if(this->fleetBoard.placeShip(yIndex,  yIndex, direction, this->destroyer)){
+
+					this->destroyer.setPlaced(true);
+				
+				}
+ 
+      }
+
+      while(this->patrolBoat.getPlaced() == false && this->patrolBoat.exists()){
+        
+				int xIndex = this->randomXIndex();
+				int yIndex = this->randomYIndex();
+				string direction = this->randomDirection();
+
+				//cout << "Attempting to place Patrol Boat at (" << xIndex << ", " << yIndex << ") Direction: " << direction << endl;
+
+				if(this->fleetBoard.placeShip(xIndex, yIndex, direction, this->patrolBoat)){
+
+					this->patrolBoat.setPlaced(true);
+				
+				}
+
+
+
+      }
+
+      while(this->submarine.getPlaced() == false && this->submarine.exists()){
+
+				int xIndex = this->randomXIndex();
+				int yIndex = this->randomYIndex();
+				string direction = this->randomDirection();
+				
+				//cout << "Attempting to place Submarine at (" << xIndex << ", " << yIndex << ") Direction: " << direction << endl;
+
+				if(this->fleetBoard.placeShip(xIndex, yIndex, direction, this->submarine)){
+
+					this->submarine.setPlaced(true);
+				
+				}
+
+      }
+
+    }
+
+		int randomXIndex(){
+
+			//Need to do seed in nano seconds (otherwise multiple attempts are made to place ship invalidly as time(null) is too slow)
+			struct timespec ts;
+			clock_gettime(CLOCK_MONOTONIC, &ts);
+
+			/* using nano-seconds instead of seconds */
+			srand((time_t)ts.tv_nsec);
+
+			return rand() % (this->fleetBoard.getWidth());
+
+		}
+
+		int randomYIndex(){
+
+			//Need to do seed in nano seconds (otherwise multiple attempts are made to place ship invalidly as time(null) is too slow)
+			struct timespec ts;
+			clock_gettime(CLOCK_MONOTONIC, &ts);
+
+			/* using nano-seconds instead of seconds */
+			srand((time_t)ts.tv_nsec);
+
+			return rand() % (this->fleetBoard.getHeight());
+
+		}
+
+		string randomDirection(){
+			
+			//Need to do seed in nano seconds (otherwise multiple attempts are made to place ship invalidly as time(null) is too slow)
+			struct timespec ts;
+			clock_gettime(CLOCK_MONOTONIC, &ts);
+
+			/* using nano-seconds instead of seconds */
+			srand((time_t)ts.tv_nsec);
+			
+			int direction = rand() % 50;
+
+			if(direction >= 25){
+				
+				return "h";
+
+			}else{
+				
+				return "v";
+
+			}
+
+		}
+
+    void initializeBoards(int width, int height){
+      
+      //Set up the boards
+      this->fleetBoard = Board(width, height);
+      this->targetBoard = Board(width, height);
+
+    }
+
+
+    void initializeShip(int size, string name){
+
+      if(name == "battleship"){
+
+        this->battleship = Ship(size, "B");
+
+      }else if(name == "carrier"){
+
+        this->carrier = Ship(size, "C");
+
+      }else if(name == "destroyer"){
+
+        this->destroyer = Ship(size, "D");
+
+      }else if(name == "patrolBoat"){
+
+        this->patrolBoat = Ship(size, "P");
+
+      }else if(name == "submarine"){
+
+        this->submarine = Ship(size, "S");
+
+      }
+
+    }
+
+		bool shipsPlaced(){
+
+			if(this->battleship.exists() && this->battleship.getPlaced() == false){
+				
+				return false;
+			
+			}
+
+			if(this->carrier.exists() && this->carrier.getPlaced() == false){
+				
+				return false;
+			
+			}
+
+			if(this->destroyer.exists() && this->destroyer.getPlaced() == false){
+				
+				return false;
+			
+			}
+
+			if(this->patrolBoat.exists() && this->patrolBoat.getPlaced() == false){
+
+				return false;
+
+			}
+
+			if(this->submarine.exists() && this->submarine.getPlaced() == false){
+				
+				return false;
+			
+			}
+
+			return true;
+
+		}
+
+		void printFleetStatus(){
+
+			if(this->battleship.exists()){
+
+				if(this->battleship.getPlaced()){
+
+					cout << "Battleship - Placed" << endl;
+				
+				}else{
+					
+					cout << "Battleship - Not Placed" << endl;
+				
+				}
+			
+			}
+
+			if(this->carrier.exists()){
+
+				if(this->carrier.getPlaced()){
+
+					cout << "Carrier - Placed" << endl;
+				
+				}else{
+					
+					cout << "Carrier - Not Placed" << endl;
+				
+				}
+			
+			}
+
+			if(this->destroyer.exists()){
+
+				if(this->destroyer.getPlaced()){
+
+					cout << "Destroyer - Placed" << endl;
+				
+				}else{
+					
+					cout << "Destroyer - Not Placed" << endl;
+				
+				}
+			
+			}
+
+			if(this->patrolBoat.exists()){
+
+				if(this->patrolBoat.getPlaced()){
+
+					cout << "Patrol Boat - Placed" << endl;
+				
+				}else{
+					
+					cout << "Patrol Boat - Not Placed" << endl;
+				
+				}
+			
+			}
+
+			if(this->submarine.exists()){
+
+				if(this->submarine.getPlaced()){
+
+					cout << "Submarine - Placed" << endl;
+				
+				}else{
+					
+					cout << "Submarine - Not Placed" << endl;
+				
+				}
+			
+			}
+
+			cout << endl;
+
+		}
+
+
+    Ship getBattleship(){
+
+      return this->battleship;
+
+    }
+
+    void setBattleship(Ship value){
+
+      this->battleship = value;
+
+    }
+
+    Ship getCarrier(){
+
+      return this->carrier;
+
+    }
+
+    void setCarrier(Ship value){
+
+      this->carrier = value;
+
+    }
+
+    Ship getDestroyer(){
+
+      return this->destroyer;
+
+    }
+
+    void setDestroyer(Ship value){
+
+      this->destroyer = value;
+
+    }
+
+    Ship getPatrolBoat(){
+
+      return this->patrolBoat;
+
+    }
+
+    void setPatrolBoat(Ship value){
+
+      this->patrolBoat = value;
+
+    }
+
+    Ship getSubmarine(){
+
+      return this->submarine;
+
+    }
+
+    void setSubmarine(Ship value){
+
+      this->submarine = value;
+
+    }
+
+    Board getFleetBoard(){
+
+      return this->fleetBoard;
+
+    }
+
+    void setFleetBoard(Board value){
+
+      this->fleetBoard = value;
+
+    }
+
+    Board getTargetBoard(){
+
+      return this->targetBoard;
+
+    }
+
+    void setTargetBoard(Board value){
+
+      this->targetBoard = value;
+
+    }
+
+		
+    void setType(string value){
+
+      this->type = value;
+    
+    }
+
+		string getType(){
+
+			return this->type;
+
+		}
 
 };
