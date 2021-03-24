@@ -181,15 +181,147 @@ Throughout this process, there have been many testing phases and finding bugs to
 
 Implementing board onto the console:
 
-Implementing board labels: 
+While the use of a vector found creating a board and having it initially appear on the console was an easy task, having the board align correctly on the board. For example, on the 10th row, as 10 is 2 chars, it moved every space on the row forward one. 
+This issue was solved with this code:
+
+####
+    void printIntValue(int value, string alignment = "center") {
+
+      //Determine length of the int as to appropriately space the output
+      if(value < 10) {
+
+        if(alignment == "center"){
+
+          cout << " " << value << " ";
+        
+        }
+        else if (alignment == "left"){
+
+          cout << value << "  ";
+
+        }
+        else{
+
+          cout << "  " << value;
+
+        }
+
+      }
+      else if (value < 100){
+
+        if (alignment == "right" || alignment == "center" ){
+
+          cout << " " << value ;
+
+        }
+        else{
+
+          cout << value << " ";
+
+        }
+
+      }else{
+
+        cout << "   ";
+      
+      }
+
+    }
+		####
+
+		For further improvement, I would account for board sizes over 1000, however it appears the console itself does not allow for for boards that size to be printed. Read.me includes directions to user to not allow board size to excede a certain amount as customizing the board as such can cause the console to crash/recur.  
 
 Using RNG to auto-place a ship:
 
+
+
 Implementing ada_config file:
+
+At first, the board size and ship sizes were hardcoded in and implementing ada_config for user customisation proved difficult as although a variable storing the Ada_config board details could be done and used within the code using config.h, getting the ship size values to be stored in a variable would not initially work (tested initially by outputting the values on the console). This was fixed by transferring the config.h file contents and editing it within the game file itself as so: 
+
+###
+bool loadConfig(string fileName){
+
+			string rowString;
+			string lineType;
+			
+			string boardWidthString;
+			string boardHeightString;
+			
+			string shipType;
+			string shipSizeString;
+			
+			ifstream configFile(fileName);
+
+			if(configFile.is_open()){
+				
+				while(getline(configFile, rowString)){
+					
+					stringstream row(rowString);
+					
+					getline(row, lineType, ':');
+
+					if(lineType == "Board"){
+						
+						//Grab the board width and height
+						getline(row, boardWidthString, 'x');
+						getline(row, boardHeightString, '\n');
+						
+						//Store the width and height
+						this->boardWidth = stoi(boardWidthString);
+						this->boardHeight = stoi(boardHeightString);
+
+					}
+
+					if(lineType == "Boat"){
+						
+						getline(row, shipType, ',');
+						getline(row, shipSizeString, '\n');
+
+						if(shipType == "Battleship"){
+
+							this->battleshipSize = stoi(shipSizeString);
+
+						}else if(shipType == "Carrier"){
+
+							this->carrierSize = stoi(shipSizeString);
+
+						}else if(shipType == "Destroyer"){
+						
+							this->destroyerSize = stoi(shipSizeString);
+
+						}else if(shipType == "Patrol Boat"){
+						
+							this->patrolBoatSize = stoi(shipSizeString);
+
+						}else if(shipType == "Submarine"){
+
+							this->submarineSize = stoi(shipSizeString);
+
+						}
+
+					}
+						
+				}
+
+				configFile.close();
+
+			}else{
+
+				return false;
+
+			}
+
+			return true;
+
+		}
+###
 
 Implementing ships as a vector: 
 
-Testing phases have been done on these tickets:
+As the board class was created as vector, the ship class was decided to also be stored as a vector. That way, this would allow reduction of code smells and would be easier to manipulate all ships in one section of code rather than to individually call each ship when making changes throughout the game. While storing the board as vector was found to be a success, success in storing ships as a vector proved difficult. Unable to fix this issue, it was ultimately decided to store each ship individually. In further iterations of the project, implementing a ship vector would be a top priority. 
+
+##Testing phases have been done on these tickets##
 
 BS-015 - Testing game mode menu 
 BS-020 - Testing select opponent menu 
