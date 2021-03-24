@@ -1,7 +1,7 @@
 #include "Board.h"
 #include "Player.h"
 #include "Ship.h"
-//#include "Config.h"
+#include "Config.h"
 
 #include <iostream>
 #include <fstream>
