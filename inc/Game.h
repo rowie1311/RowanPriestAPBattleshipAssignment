@@ -428,6 +428,7 @@ class Game{
 
 					//bs-015 
 					cout << gameState;
+					cout << gameMode;
           
           cout << "Please select a game mode (to select a game mode input the corresponding number):" << endl << endl
           << "1. Classic Battleships - 1 Shot Per turn, you better make it count!" << endl
@@ -441,6 +442,7 @@ class Game{
             //Classic Mode selected
             cout << endl << "Classic battleships selected" << endl << endl;
             this->gameMode = "classic";//set game mode to classic
+						cout << gameMode;
 
             //Move game onto select opponent
             this->gameState = "selectOpponent";
@@ -450,6 +452,7 @@ class Game{
             //Salvo mode selected
             cout << endl << "Salvo mode selected" << endl << endl;
             this->gameMode = "salvo";//set game mode to salvo mode
+						cout << gameMode;
 
             //Move game onto select opponent
             this->gameState = "selectOpponent";
@@ -457,6 +460,8 @@ class Game{
           }else if(input == "3"){
             
             this->gameState = "quit";
+
+						cout << gameState;
 
           }else{
             
