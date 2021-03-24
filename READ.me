@@ -124,6 +124,7 @@ Each task was labelled with a ticket number (Eg: BS-000). Each ticket number rep
 ###D. Analysis and Decomposition into key 'Epic' style tasks###
 During this project, an agile approach was taken in order to design a solution. A kanban board was created in order to have the main aspects of the project as 'Epics' with 'stories' and 'sub-tasks'. Stories being tasks with results that the user would see/be part of (ie: board being shown on console) and subtask being a 'backend' task (ie: creating a player class)
 The link to the final kanban is below detailing my epic breakdown along with stories/sub-tasks
+
 Link to final kanban board: https://trello.com/b/nQHPgXwl/apbattleships
 
 
@@ -171,15 +172,35 @@ Not only was the customers requirements considered but during the process, teste
 
 ##Initial Phase##
 
+When creating the board class, the initial phase was to ensure a height and width could fed into it hard coded, ensured it worked as a vector and to ensure it printed on the console by iterating through each row created and pushed to a vector with characters to represent each part of the grid. 
+
+When implementing the ships,  the initial phase was to create an object that was 1x1 in size and have that placed on the board to show it does place on the board. Then to have one ship as the correct size and placed on the board then to allow all ships to be placed on the board with hardcoded sizes. 
+
+When creating a player, I initally had only one player that was able to to enter inputs into the menu. 
+
+When creating the menu, I initially outputted all the options and when an option was selected such 'Classic battleships mode' it outputted text saying 'Classic battleships mode selected' then outputted every option selected at the end with a confirmation input from the player and it ends the program. A quit option was also implemented at this phase. 
+
+Initially, when placing a ship, the user could only select 1 ship to be placed and it would display on the console where the ship was placed. Similarly with the auto place function, the initial phase only allowed for one ship to be auto placed. 
+
+For the game modes, battleships classic was the first game mode implemented as in future phases the classic mode can be ammended to include modes such as salvo.
+
 ##Phase 2##
+
+When creating the board class, the next phase was to include labels, ensure the board printed on the console was aligned and to implement converting the lettered coordinates along the columns was recognised when a coordinate was input, for example; Column A was recognised by the program as column 1 (the first column) so when a user input 'A1' the program would then know it's the square on row 1/column 1. 
+
+In the next phase of implementing ships, I had the ship be able to register hits then if the hits is equal to the ships size it will be a 'sunk' ship. Also implemented was the autoplace feature whereby each ship can be auto-placed individually. 
+
+
 
 ##Final Phase##
 
-###E. Testing and resolving bugs###
+Final phase of creating the board was to allow it's width and height values be taken from the config file, not from being hard coded in. To allow ships placed to show on the board as well as hit and miss markers to show on the board. 
+
+###E/F Testing and resolving bugs + key design challenge, how I solved them###
 
 Throughout this process, there have been many testing phases and finding bugs to fix. Example include: 
 
-Implementing board onto the console:
+##Implementing board onto the console##
 
 While the use of a vector found creating a board and having it initially appear on the console was an easy task, having the board align correctly on the board. For example, on the 10th row, as 10 is 2 chars, it moved every space on the row forward one. 
 This issue was solved with this code:
@@ -231,11 +252,13 @@ This issue was solved with this code:
 
 		For further improvement, I would account for board sizes over 1000, however it appears the console itself does not allow for for boards that size to be printed. Read.me includes directions to user to not allow board size to excede a certain amount as customizing the board as such can cause the console to crash/recur.  
 
-Using RNG to auto-place a ship:
+##Using RNG to auto-place a ship##
 
+Normally, when generating a random number to pick a place to auto-place each ship, a seed needs to be fed into it to generate the random number. However, if the seed is the same each time, the same random number will be generated meaning the same place for each ship would be picked each time and cause it to stop working. From research, I found a common workaround is to use the systems internal clock as a number to use as the seed as that updates regularly ensuring a different number is generated each time. However, this still caused issues and for the auto-place function to not work. I found from outputting the result of getting the number received from the internal clock, it was getting the number by the second while the auto-place function was completing the auto-placing much faster than 1 second meaning the seed number being fed into the function was still the same every time. 
 
+To fix this, I changed it so instead of it taking the time in seconds, it took the time by nanoseconds which ensured the seed was different everytime. 
 
-Implementing ada_config file:
+##Implementing ada_config file##
 
 At first, the board size and ship sizes were hardcoded in and implementing ada_config for user customisation proved difficult as although a variable storing the Ada_config board details could be done and used within the code using config.h, getting the ship size values to be stored in a variable would not initially work (tested initially by outputting the values on the console). This was fixed by transferring the config.h file contents and editing it within the game file itself as so: 
 
@@ -317,9 +340,11 @@ bool loadConfig(string fileName){
 		}
 ###
 
-Implementing ships as a vector: 
+##Implementing ships as a vector##
 
 As the board class was created as vector, the ship class was decided to also be stored as a vector. That way, this would allow reduction of code smells and would be easier to manipulate all ships in one section of code rather than to individually call each ship when making changes throughout the game. While storing the board as vector was found to be a success, success in storing ships as a vector proved difficult. Unable to fix this issue, it was ultimately decided to store each ship individually. In further iterations of the project, implementing a ship vector would be a top priority. 
+
+Here is mainly where a key design challenge occurred as storing each ship separately caused more work throughout the project and handling aspects of the ships differently to the how the board objects were handled. Although worked around by calling each ship object individually (as seen above in ada_config 'loadConfig' function above). This works successfully however is bad and inconsistent practise. 
 
 ##Testing phases have been done on these tickets##
 
@@ -334,14 +359,5 @@ Each of of these tasks includes comments of any findings in corresponding branch
 
 To further improve on testing I would have tested more features and possible user inputs such more invalid inputs and considerations for Edge cases. 
 
-Findings from user test: 
-
-
-
-
-###F. Reflection on key design challenges and how I solved them###
-
-
-issue
--  randomly placing ships - changing random number - had to change it from seconds to nanoseconds
+##Findings from user test##
  
