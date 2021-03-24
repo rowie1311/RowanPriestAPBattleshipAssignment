@@ -438,6 +438,7 @@ class Game{
             //Classic Mode selected
             cout << endl << "Classic battleships selected" << endl << endl;
             this->gameMode = "classic";//set game mode to classic
+						cout << gameMode;
 
             //Move game onto select opponent
             this->gameState = "selectOpponent";
@@ -447,6 +448,7 @@ class Game{
             //Salvo mode selected
             cout << endl << "Salvo mode selected" << endl << endl;
             this->gameMode = "salvo";//set game mode to salvo mode
+						cout << gameMode;
 
             //Move game onto select opponent
             this->gameState = "selectOpponent";
@@ -480,6 +482,7 @@ class Game{
             cout << endl << "VS Computer Selected" << endl << endl;
             this->gameOpponent = "computer";//set game mode to classic
 						this->player2.setName("Admiral Crunch");
+						cout << gameOpponent;
             
 						//Move game onto select opponent
             this->gameState = "confirmSettings";
@@ -490,6 +493,7 @@ class Game{
             cout << endl << "VS Human selected" << endl << endl;
             this->gameOpponent = "human";//set game mode to salvo mode
 						this->player2.setName("Player 2");
+						cout << gameOpponent;
 
             //Move game onto select opponent
             this->gameState = "confirmSettings";
@@ -1892,6 +1896,7 @@ class Game{
         if(this->gameState == "quit"){
 
           cout << "Bye !" << endl << endl;
+					cout << gameState;
           return 0;
 
         }
