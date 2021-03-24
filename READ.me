@@ -1,0 +1,387 @@
+######Welcome to Adaships#####
+Rowan Priest Advanced Programming Module Assessment Part 2
+
+####Link to repl.it####
+
+https://replit.com/@RowanPriest/RowanPriestAPBattleshipAssignment#READ.me
+
+####Link to github####
+
+https://github.com/rowie1311/RowanPriestAPBattleshipAssignment
+
+####Using the ada_config.ini file####
+
+To include customisation in Adaships we have an option of customising the 'adaships_config.ini' file in order to change the size of board and of the ships for gameplay.
+
+ada_config.ini file is set out like so: 
+####
+
+Board:10x10
+Boat:Carrier,5
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+If you would like to change the board dimensions (x,y) from 10x10 to 20x20 you would change 
+
+Board:10x10
+
+to 
+
+Board:20x20
+
+and the file will now look like 
+
+####
+
+Board:20x20
+Boat:Carrier,5
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+If you would like to change the Carrier boat from '5' squares in size to '4' squares in size 
+
+Boat:Carrier,5
+
+to
+
+Boat:Carrier,4
+
+and the file will now look like
+
+####
+
+Board:20x20
+Boat:Carrier,4
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+Any changes made to the ada_config.ini file will update the next time you run the program 
+
+#####WARNING####
+Do NOT set the board to over 704x704 or below 5x5
+Do NOT set the ship pieces to be larger than the board size (Eg: setting the carrier to be '21' on a 20x20 board)
+
+Through testing, implementing either of these customisations will result in breaking the program. If done, please restart the game.
+
+
+###Problem###
+The problem presented from the client was to create a working version of the game 'Battleships' named Ada Ships.
+
+##AdaShips should play as follows##
+User (Player 1) will be using the console to place ships or auto-place ships onto a board based on the coordinates on the board visual on the console. The user will be able to select from a menu to play against a computer (AI) or against another user (Player 2). The computer will automatically place ships on their own board or the other user (Player 2) will place their ships on their own board (Player 1 will not see this board nor will Player 2 see Player 1's board).
+
+Each player will take it in turns to target a coordinate in order to hit their opponents ship, ensuring the user hits each part of the users ship in order to 'sink' it. This continues until a player sinks the opponents ships, who is then decalred the winner.
+
+##The requirements are as follows##
+- User runs program on console to play Adaships
+- User has a menu displayed on console to be able to select game options 
+- Adaships should allow 'Player vs Computer' mode 
+- Player should be able to place their ship pieces manually vis inputting a coordinate
+- Player should be able to select an auto-place option that will automatically place ships for the player
+- Player should be able to view their display board with their ships 
+- Computer player should have their own display board that isn't visible to the user(player1)
+- User should have a second visible board to represent the computers board without showing the computers ship placements. 
+- The computer player display board for the user should display the squares on the board the user has already targeted
+- The displayed computer player board for the user should distinguish between a 'hit' target (hitting a ship) with 'H' and a missed target with a 'M'
+- When the user has hit every part of one of the opponents ships, the user is notified that they have sunk a ship 
+- When the computer has hit every part of one of the users ships, the user is notified that one of their ships has been sunk 
+- When the user has sunk the computers final ship, it will be game over and the user wins
+- When a winner has been decided, the user has the option to replay or to quit 
+- The user has the option quit at anytime 
+- The user is able to edit the ada_config file to adjust the board and ship sizes  
+
+###B.Design Solution###
+Initial design solution flow chart: https://lucid.app/lucidchart/68920519-c6d9-45c4-aa34-0173d5c99449/edit?beaconFlowId=F10437F45A366CD2&page=0_0#
+
+
+###C. Initial working plan###
+The working plan was to to take an agile, iterative approach towards the problem. The initial requirements were listed out and solutions to the problems were identified. 
+The first stage was to create a UML diagram outlying the first iteration of the user journey to help identify aspects of the game that need to be built and how each aspect interacts with each other. 
+Using an iterative approach, we took the initial identified aspects and aimed for different levels of implementation including: MVP, iteration # and finished product. 
+
+MVP is creating that part of the project so it is a minimal viable product, it is able to minimally solve the problem. Once the MVP is implemented, then further iterations are done to ensure bugs/errors are caught as early as possible and encourages testing as often as possible. 
+Although an idea of how the final version of the part should look like however through the iterative process; more features, requirements or even better ways of implementing the part of the solution have been found.
+
+The next stage was to outline the various parts/ game mechanics that are required which are:
+- Board class 
+- Ship class
+- Ada_config file 
+- auto placing ships
+- manual placing ships 
+- creating computer AI 
+- menu 
+
+Then a kanban board was created listed each part of the solution along with requirements for each part to keep track of where I was with each part and clearly put any issues or changes along with understanding what do to every time I returned to the project. 
+
+Each task was labelled with a ticket number (Eg: BS-000). Each ticket number represented a branch on the git hub repo to track which each branch represents task wise and to track where each change was made. 
+
+###D. Analysis and Decomposition into key 'Epic' style tasks###
+During this project, an agile approach was taken in order to design a solution. A kanban board was created in order to have the main aspects of the project as 'Epics' with 'stories' and 'sub-tasks'. Stories being tasks with results that the user would see/be part of (ie: board being shown on console) and subtask being a 'backend' task (ie: creating a player class)
+The link to the final kanban is below detailing my epic breakdown along with stories/sub-tasks
+
+Link to final kanban board: https://trello.com/b/nQHPgXwl/apbattleships
+
+
+###E.Initial object oreintated designs ideas###
+
+To create a clean, concise project; an Object Orientated Design approach was taken throughout. This meant the elements of the game would be created as classes with one final 'game' class there to call/create the various objects required to run the program/game.  
+ 
+####Section 2####
+
+###A. Adoption and use of 'good' standards###
+
+For a successful program/code, 'good' coding practises must be implemented throughout the project. 
+
+First, the 'coding craftsmanship manifesto' was adopted throughout the project which is as follows: 
+
+		Not only working software,
+		but also well-crafted software
+
+		Not only responding to change,
+		but also steadily adding value
+
+		Not only individuals and interactions,
+		but also a community of professionals
+
+		Not only customer collaboration,
+		but also productive partnerships 
+
+Although an iterative approach may break these standards in earlier stages, the aim of having each iteration or phase working closer to high coding standards was applied. For example, some aspects such as board size was initially hard coded in to ensure at a minimal level it works before elevating the codes standard to something more usable. 
+
+For well crafted software, in the early stages of creating, I researched and noted absolute musts in code/coding practise I need to adopt to ensure my code is well crafted. This meant at each stage of implementing an aspect, a refactoring took place in order to polish the code. This included commenting code, making the code more readable and even having peer reviews of my code to have input on how I can heighten the codes standard. 
+
+Each change made within the code was there not only as a change but added at least some value to the code including using more concise variable names to improve readability, removing parts of code that repeated itself and adding nothing to the project. If a change was considered, I thought about the why this change must be done and what does it add to the code or even considered if it took anything away from the code. Changes for the sake of changes were avoided. 
+
+In reference to peer reviews, throughout this process I did research on possible different ways of implementation in further iterations. So in the initial implementation, I would use a method that worked and ensured it worked then in further iterations 'what could be done better' was considered and that was done via research, peer reviews and disscussions with other professionals to collaborate a better solution to an aspect of the problem. 
+
+An initial list/set of requirements had been laid out however, throughout the process, whether this requirement actually solved the problem and if an amendment to the requirement would solve the problem better was consider. Asking questions and using the 5 whys was a great help to this process. For example: 
+1. What is the problem?
+2. Well, why do they have that problem?
+3. why does this solve the problem/ why doesnt it solve the problem
+etc 
+
+Not only was the customers requirements considered but during the process, testers would try the product and list out problems they had using the program further adding to the requirements which needed solutions implemented. 
+
+###B/C/D Development phases###
+
+##Initial Phase##
+
+When creating the board class, the initial phase was to ensure a height and width could fed into it hard coded, ensured it worked as a vector and to ensure it printed on the console by iterating through each row created and pushed to a vector with characters to represent each part of the grid. 
+
+When implementing the ships,  the initial phase was to create an object that was 1x1 in size and have that placed on the board to show it does place on the board. Then to have one ship as the correct size and placed on the board then to allow all ships to be placed on the board with hardcoded sizes. 
+
+When creating a player, I initally had only one player that was able to to enter inputs into the menu. 
+
+When creating the menu, I initially outputted all the options and when an option was selected such 'Classic battleships mode' it outputted text saying 'Classic battleships mode selected' then outputted every option selected at the end with a confirmation input from the player and it ends the program. A quit option was also implemented at this phase. 
+
+Initially, when placing a ship, the user could only select 1 ship to be placed and it would display on the console where the ship was placed. Similarly with the auto place function, the initial phase only allowed for one ship to be auto placed. 
+
+For the game modes, battleships classic was the first game mode implemented as in future phases the classic mode can be ammended to include modes such as salvo.
+
+##Phase 2##
+
+When creating the board class, the next phase was to include labels, ensure the board printed on the console was aligned and to implement converting the lettered coordinates along the columns was recognised when a coordinate was input, for example; Column A was recognised by the program as column 1 (the first column) so when a user input 'A1' the program would then know it's the square on row 1/column 1. 
+
+In the next phase of implementing ships, I had the ship be able to register hits then if the hits is equal to the ships size it will be a 'sunk' ship. Also implemented was the autoplace feature whereby each ship can be auto-placed individually.
+
+The ada_config file was created and a separate config header file was created with functions to store the values in the config file as a variable. 
+
+Player 2 as a human was implemented allowing for player 1 and player 2 to have different display boards with their placed ships and alternating turns in game. 
+
+Second phase of menu was to implement a help menu when the user typed help, it would show a menu. Included more options availiable and refatored output to make it look tidier on the console. 
+
+Implemented the Salvo mode which works simililarly to classic mode however it allows multiple shots in one turn in correlation to how many ships the player has remaining. This included adding auto-fire all feature, registering multiple shots instead of one. accounting for 'x shots remaining' and '1 shot remaining' printed on the console. 
+
+Different game states were implemented at this stage to let the program know what state the game is in and run the program accordingly. This allowed for easier looping of the code and ability to change states for example: game mode, game state, quit. 
+
+
+
+##Final Phase##
+
+Final phase of creating the board was to allow it's width and height values be taken from the config file, not from being hard coded in. To allow ships placed to show on the board as well as hit and miss markers to show on the board. Board included coordinate labels. 
+
+For ships, auto place and auto place all is finalised. Ships labels were ammended to show if parts were hit during gameplay. Allowed for players to input a coordinate to target a place on the opponents board. 
+
+Menu features included pause for when the computer player was implementing an action. Further refactoring for clarity on the console. Ensuring to account for any invalid inputs/edge cases as well as a menu for salvo mode and further help menus. 
+
+Ada_config functions moved to game.h file and player can now customise the board and ship sizes. 
+
+###E/F Testing and resolving bugs + key design challenge, how I solved them###
+
+Throughout this process, there have been many testing phases and finding bugs to fix. Example include: 
+
+##Implementing board onto the console##
+
+While the use of a vector found creating a board and having it initially appear on the console was an easy task, having the board align correctly on the board. For example, on the 10th row, as 10 is 2 chars, it moved every space on the row forward one. 
+This issue was solved with this code:
+
+####
+    void printIntValue(int value, string alignment = "center") {
+
+      //Determine length of the int as to appropriately space the output
+      if(value < 10) {
+
+        if(alignment == "center"){
+
+          cout << " " << value << " ";
+        
+        }
+        else if (alignment == "left"){
+
+          cout << value << "  ";
+
+        }
+        else{
+
+          cout << "  " << value;
+
+        }
+
+      }
+      else if (value < 100){
+
+        if (alignment == "right" || alignment == "center" ){
+
+          cout << " " << value ;
+
+        }
+        else{
+
+          cout << value << " ";
+
+        }
+
+      }else{
+
+        cout << "   ";
+      
+      }
+
+    }
+		####
+
+		For further improvement, I would account for board sizes over 1000, however it appears the console itself does not allow for for boards that size to be printed. Read.me includes directions to user to not allow board size to excede a certain amount as customizing the board as such can cause the console to crash/recur.  
+
+##Using RNG to auto-place a ship##
+
+Normally, when generating a random number to pick a place to auto-place each ship, a seed needs to be fed into it to generate the random number. However, if the seed is the same each time, the same random number will be generated meaning the same place for each ship would be picked each time and cause it to stop working. From research, I found a common workaround is to use the systems internal clock as a number to use as the seed as that updates regularly ensuring a different number is generated each time. However, this still caused issues and for the auto-place function to not work. I found from outputting the result of getting the number received from the internal clock, it was getting the number by the second while the auto-place function was completing the auto-placing much faster than 1 second meaning the seed number being fed into the function was still the same every time. 
+
+To fix this, I changed it so instead of it taking the time in seconds, it took the time by nanoseconds which ensured the seed was different everytime. 
+
+##Implementing ada_config file##
+
+At first, the board size and ship sizes were hardcoded in and implementing ada_config for user customisation proved difficult as although a variable storing the Ada_config board details could be done and used within the code using config.h, getting the ship size values to be stored in a variable would not initially work (tested initially by outputting the values on the console). This was fixed by transferring the config.h file contents and editing it within the game file itself as so: 
+
+###
+bool loadConfig(string fileName){
+
+			string rowString;
+			string lineType;
+			
+			string boardWidthString;
+			string boardHeightString;
+			
+			string shipType;
+			string shipSizeString;
+			
+			ifstream configFile(fileName);
+
+			if(configFile.is_open()){
+				
+				while(getline(configFile, rowString)){
+					
+					stringstream row(rowString);
+					
+					getline(row, lineType, ':');
+
+					if(lineType == "Board"){
+						
+						//Grab the board width and height
+						getline(row, boardWidthString, 'x');
+						getline(row, boardHeightString, '\n');
+						
+						//Store the width and height
+						this->boardWidth = stoi(boardWidthString);
+						this->boardHeight = stoi(boardHeightString);
+
+					}
+
+					if(lineType == "Boat"){
+						
+						getline(row, shipType, ',');
+						getline(row, shipSizeString, '\n');
+
+						if(shipType == "Battleship"){
+
+							this->battleshipSize = stoi(shipSizeString);
+
+						}else if(shipType == "Carrier"){
+
+							this->carrierSize = stoi(shipSizeString);
+
+						}else if(shipType == "Destroyer"){
+						
+							this->destroyerSize = stoi(shipSizeString);
+
+						}else if(shipType == "Patrol Boat"){
+						
+							this->patrolBoatSize = stoi(shipSizeString);
+
+						}else if(shipType == "Submarine"){
+
+							this->submarineSize = stoi(shipSizeString);
+
+						}
+
+					}
+						
+				}
+
+				configFile.close();
+
+			}else{
+
+				return false;
+
+			}
+
+			return true;
+
+		}
+###
+
+##Implementing ships as a vector##
+
+As the board class was created as vector, the ship class was decided to also be stored as a vector. That way, this would allow reduction of code smells and would be easier to manipulate all ships in one section of code rather than to individually call each ship when making changes throughout the game. While storing the board as vector was found to be a success, success in storing ships as a vector proved difficult. Unable to fix this issue, it was ultimately decided to store each ship individually. In further iterations of the project, implementing a ship vector would be a top priority. 
+
+Here is mainly where a key design challenge occurred as storing each ship separately caused more work throughout the project and handling aspects of the ships differently to the how the board objects were handled. Although worked around by calling each ship object individually (as seen above in ada_config 'loadConfig' function above). This works successfully however is bad and inconsistent practise. 
+
+##Testing phases have been done on these tickets##
+
+BS-015 - Testing game mode menu 
+BS-020 - Testing select opponent menu 
+BS-016 - Testing Classic Battleships mode
+BS-017 - Testing Salvo mode 
+BS-018 - testing ada_config customisation file
+BS-019 - User test of game 
+
+Each of of these tasks includes comments of any findings in corresponding branches and notes within each ticket of Trello board linked above 
+
+To further improve on testing I would have tested more features and possible user inputs such more invalid inputs and considerations for Edge cases. 
+
+##Findings from user test##
+
+###findings from user test can be found on trello board###
+ 
