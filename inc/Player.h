@@ -15,7 +15,6 @@ class Player{
     string name;
     
     int randomAttemptsLimit = 50;
-    int shipCount = 5;
 
     //The players ships
     Ship battleship;
@@ -31,11 +30,17 @@ class Player{
 
     Player(){};
 
-    string handleShotFiredAt(int x, int y){
+    string handleShotFiredAt(int x, int y, string firingPlayersLabel){
       
-      if(this->fleetBoard.isValidShot(x,y)){
+			//cout << "X = " << x << "Y = " << y << endl;
 
-        string targetedLocation = this->fleetBoard.getBoardPosition(x,y);
+      if(this->fleetBoard.isValidShot(x, y)){
+
+				string coordinate = this->fleetBoard.convertNumberToLetters(x) + to_string(y + 1); //Convert X and Y Index to coordinate 
+
+				cout << firingPlayersLabel << " fires at " << coordinate << "!" << endl;
+
+        string targetedLocation = this->fleetBoard.getBoardPosition(x, y);
        
         //Check where on the board was hit
         if(targetedLocation == this->fleetBoard.getEmptyMarker()){
@@ -56,8 +61,7 @@ class Player{
 
           if(this->battleship.sunk()){
             
-            this->shipCount--;
-            cout << "You sunk my battleship !" << endl;
+            cout << this->name << "'s battleship has been sunk!" << endl;
           
           }else{
 
@@ -75,8 +79,7 @@ class Player{
 
           if(this->carrier.sunk()){
             
-            this->shipCount--;
-            cout << "You sunk my carrier !" << endl;
+            cout << this->name << "'s carrier has been sunk!" << endl;
           
           }else{
 
@@ -94,8 +97,7 @@ class Player{
           
           if(this->destroyer.sunk()){
             
-            this->shipCount--;
-            cout << "You sunk my destroyer !" << endl;
+            cout << this->name << "'s destroyer has been sunk!" << endl;
           
           }else{
 
@@ -113,12 +115,11 @@ class Player{
 
           if(this->patrolBoat.sunk()){
             
-            this->shipCount--;
-            cout << "You sunk my patrol boat !";
+            cout << this->name << "'s patrol boat has been sunk!" << endl;
           
           }else{
 
-            cout << "Hit !";
+            cout << "Hit !"<< endl;
 
           }
 
@@ -132,12 +133,11 @@ class Player{
           
           if(this->submarine.sunk()){
 
-            this->shipCount--;
-            cout << "You sunk my submarine !";
+           cout << this->name << "'s submarine has been sunk!" << endl;
           
           }else{
 
-            cout << "Hit !";
+            cout << "Hit !"<< endl;
 
           }
           
@@ -159,7 +159,7 @@ class Player{
 
     bool isAlive(){
 
-      if(this->shipCount > 0){
+      if(this->getShipCount() > 0){
 
         return true;
 
@@ -234,8 +234,6 @@ class Player{
 					this->patrolBoat.setPlaced(true);
 				
 				}
-
-
 
       }
 
@@ -453,6 +451,64 @@ class Player{
 
 		}
 
+		int getShipCount(){
+
+			int count = 0;
+
+			if(this->battleship.exists()){
+
+				if(this->battleship.sunk() == false){
+
+					count++;
+
+				}
+			
+			}
+
+			if(this->carrier.exists()){
+
+				if(this->carrier.sunk() == false){
+
+					count++;
+
+				}
+			
+			}
+
+			if(this->destroyer.exists()){
+
+				if(this->destroyer.sunk() == false){
+
+					count++;
+
+				}
+			
+			}
+
+			if(this->patrolBoat.exists()){
+
+				if(this->patrolBoat.sunk() == false){
+
+					count++;
+
+				}
+			
+			}
+
+			if(this->submarine.exists()){
+
+				if(this->submarine.sunk() == false){
+
+					count++;
+
+				}
+			
+			}
+
+			return count;
+
+		}
+
 
     Ship getBattleship(){
 
@@ -537,7 +593,6 @@ class Player{
       this->targetBoard = value;
 
     }
-
 		
     void setType(string value){
 
@@ -550,5 +605,17 @@ class Player{
 			return this->type;
 
 		}
+
+		string getName(){
+
+      return this->name;
+
+    }
+
+    void setName(string value){
+
+      this->name = value;
+
+    }
 
 };

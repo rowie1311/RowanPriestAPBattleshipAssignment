@@ -1,16 +1,20 @@
 #include "Board.h"
 #include "Player.h"
 #include "Ship.h"
+//#include "Config.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include <cmath>
 #include <cstring>
 #include <stdlib.h>
 using namespace std;
 
-
 class Game{
   private:
+
     string gameState = "start";
     string gameMode;
     string gameOpponent;
@@ -19,27 +23,34 @@ class Game{
     Player player1;
     Player player2;
 
-    int boardWidth;
-    int boardHeight;
+    int boardWidth = 10;
+    int boardHeight = 10;
 
-    int battleshipSize;
-    int carrierSize;
-    int destroyerSize;
-    int patrolBoatSize;
-    int submarineSize;
+    int battleshipSize = 0;
+    int carrierSize = 0;
+    int destroyerSize = 0;
+    int patrolBoatSize = 0;
+    int submarineSize = 0;
 
     string action;
     string inputCoordinate;
     string inputDirection;
 
+		int currentShots;
+		string currentPlayerLabel;
+		string currentPlayerType;
+		string winningPlayerLabel;
+
     Board tempBoard;
     Ship tempShip;
     Player tempPlayer;
 
+
 		//Simulated pause for the program waiting for a user to press a key
     void pause(){
-
-      cout<<"Please press [Enter] to continue . . ." << endl;
+			cout << endl << endl;
+      cout << "Please press [Enter] to continue . . ." << endl << endl;
+			cout << endl << endl;
       cin.clear();
       cin.ignore();
 
@@ -262,31 +273,154 @@ class Game{
       
     }
 
+		void autoFire(){
+
+			while(true){
+
+				int xIndex = this->player1.randomXIndex();
+				int yIndex = this->player1.randomYIndex();
+				string result;
+
+				if(this->activePlayer == 1){
+					
+					result = this->player2.handleShotFiredAt(xIndex, yIndex, this->player1.getName());
+
+				}else{
+
+					result = this->player1.handleShotFiredAt(xIndex, yIndex, this->player2.getName());
+
+				}
+
+				if(result != "invalid"){
+
+					if(this->activePlayer == 1){
+					
+						this->player1.recordShotFired(xIndex, yIndex, result);
+
+					}else{
+
+						this->player2.recordShotFired(xIndex, yIndex, result);
+
+					}
+
+					//Successful shot break out of the loop otherwise attempt new shot
+					break;
+
+				}
+
+			}
+
+			cout << endl;
+
+		}
+
+		bool loadConfig(string fileName){
+
+			string rowString;
+			string lineType;
+			
+			string boardWidthString;
+			string boardHeightString;
+			
+			string shipType;
+			string shipSizeString;
+			
+			ifstream configFile(fileName);
+
+			if(configFile.is_open()){
+				
+				while(getline(configFile, rowString)){
+					
+					stringstream row(rowString);
+					
+					getline(row, lineType, ':');
+
+					if(lineType == "Board"){
+						
+						//Grab the board width and height
+						getline(row, boardWidthString, 'x');
+						getline(row, boardHeightString, '\n');
+						
+						//Store the width and height
+						this->boardWidth = stoi(boardWidthString);
+						this->boardHeight = stoi(boardHeightString);
+
+					}
+
+					if(lineType == "Boat"){
+						
+						getline(row, shipType, ',');
+						getline(row, shipSizeString, '\n');
+
+						if(shipType == "Battleship"){
+
+							this->battleshipSize = stoi(shipSizeString);
+
+						}else if(shipType == "Carrier"){
+
+							this->carrierSize = stoi(shipSizeString);
+
+						}else if(shipType == "Destroyer"){
+						
+							this->destroyerSize = stoi(shipSizeString);
+
+						}else if(shipType == "Patrol Boat"){
+						
+							this->patrolBoatSize = stoi(shipSizeString);
+
+						}else if(shipType == "Submarine"){
+
+							this->submarineSize = stoi(shipSizeString);
+
+						}
+
+					}
+						
+				}
+
+				configFile.close();
+
+			}else{
+
+				return false;
+
+			}
+
+			return true;
+
+		}
+
   public:
     //Default constructor
     Game(){};
 
-
-
-    //Run the game and get the game mode
+		//Run the game and get the game mode
     int run(){
       
-      //Read file and get settings
-      this->boardWidth = 10;
-      this->boardHeight = 10;
-      this->battleshipSize = 4;
-      this->carrierSize = 5;
-      this->destroyerSize = 3;
-      this->patrolBoatSize = 2;
-      this->submarineSize = 3;
+			//Read file and get settings
+			if(this->loadConfig("adaship_config.ini") == false){
+
+				cout << "Error reading config !" << endl;
+				
+				this->pause();
+
+				cout << "Forced to exit" << endl << endl;
+
+				return 0;
+
+			}
 
       //Set the current gamestate
       this->gameState = "selectMode";
 
       //Output start message
-      cout << "Welcome to Ada Ships !" << endl 
-      << "A Battle of Boats, Brains and Bravery!" << endl << endl;
+			cout << "---------------------------------------------------------" << endl << endl;
       
+			cout << "Welcome to Ada Ships !" << endl 
+      << "A Battle of Boats, Brains and Bravery!" << endl << endl;
+
+      cout << "---------------------------------------------------------" << endl << endl;
+
       while(true){
 
         //User selects the game mode
@@ -345,8 +479,9 @@ class Game{
             //VS Computer selected
             cout << endl << "VS Computer Selected" << endl << endl;
             this->gameOpponent = "computer";//set game mode to classic
-
-            //Move game onto select opponent
+						this->player2.setName("Admiral Crunch");
+            
+						//Move game onto select opponent
             this->gameState = "confirmSettings";
 
           }else if(input == "2"){
@@ -354,6 +489,7 @@ class Game{
             //VS Human selected
             cout << endl << "VS Human selected" << endl << endl;
             this->gameOpponent = "human";//set game mode to salvo mode
+						this->player2.setName("Player 2");
 
             //Move game onto select opponent
             this->gameState = "confirmSettings";
@@ -453,6 +589,8 @@ class Game{
           
           //Set player 1 to Human
           this->player1.setType("human");
+
+					this->player1.setName("Player 1");
           
           //Reset player 1
           this->resetPlayer1();
@@ -468,9 +606,13 @@ class Game{
         }
 
         if(this->gameState == "player1PlaceFleet"){
+
+          cout << "---------------------------------------------------------" << endl << endl;
           
-          cout << "Player 1 please position your fleet:" << endl
+					cout << "Player 1 please position your fleet:" << endl
           << "(Note: for help at any time, type \"help\")" << endl << endl;
+
+					cout << "---------------------------------------------------------" << endl << endl;
 
           //Player 1 inputs coordinates to place their fleet
           while(this->gameState == "player1PlaceFleet"){
@@ -953,9 +1095,12 @@ class Game{
 					if(this->player2.getType() == "human"){
 
 						//Human player
+						cout << "---------------------------------------------------------" << endl << endl;
 
 						cout << "Player 2 please position your fleet:" << endl
           	<< "(Note: for help at any time, type \"help\")" << endl << endl;
+
+						cout << "---------------------------------------------------------" << endl << endl;
 
 						//Player 2 inputs coordinates to place their fleet
 						while(this->gameState == "player2PlaceFleet"){
@@ -1397,7 +1542,7 @@ class Game{
 
 						while(this->gameState == "player2CofirmPlacement"){
 
-							this->player1.getFleetBoard().printBoard();
+							this->player2.getFleetBoard().printBoard();
 
 							cout << "Player 2 - Please Confirm you are happy with current ship placement:"<< endl
 							<< "1. Confirm ship placement" << endl
@@ -1450,11 +1595,297 @@ class Game{
         }
 
 				if(this->gameState == "mainGame"){
-
-          cout << "Ada Ships Begin!" << endl << endl;
+					
+					cout << "---------------------------------------------------------" << endl << endl;
           
+					cout << "Ada Ships Begin!" << endl << endl;
+          
+					cout << "---------------------------------------------------------" << endl << endl;
+					
+					//Set the active player to player 1 for the start of the game
+					this->activePlayer = 1;
 
-					return 0;
+					while(this->gameState == "mainGame"){
+
+						//Determine the active player
+						if(this->activePlayer == 1){
+							
+							this->currentPlayerLabel = "Player 1";
+							this->currentPlayerType = this->player1.getType();
+
+						}else{
+
+							this->currentPlayerType = this->player2.getType();
+
+							if(this->currentPlayerType == "human"){
+
+								this->currentPlayerLabel = "Player 2";
+
+							}
+							else{
+
+								this->currentPlayerLabel = "Admiral Crunch";
+
+							}
+
+						}
+
+						//Output message
+						cout << "---------------------------------------------------------" << endl << endl;
+
+						cout << this->currentPlayerLabel << "'s Turn:" << endl;
+						cout << "(Note: for help at any time, type \"help\")" << endl << endl;
+						
+						cout << "---------------------------------------------------------" << endl << endl;
+
+						//Determine if the game mode is Salvo or Classic mode 
+						if(this->gameMode == "salvo"){
+							
+							//Set the amount of shots to the amount of ships the active player has remaining
+							if(this->activePlayer == 1){
+
+								this->currentShots = this->player1.getShipCount();
+							
+							}else{
+
+								this->currentShots = this->player2.getShipCount();
+
+							}
+
+						}else{
+							
+							//Classic mode so just set shots to 1
+							this->currentShots = 1;
+
+						}
+
+						bool autoFireAll;
+
+						if(this->currentPlayerType == "computer"){
+							
+							//Current player is computer so auto fire
+							autoFireAll = true;
+
+						}else{
+
+							autoFireAll = false;
+						
+						}
+						
+						//Loop through the appropriate shot
+						for(int i = 0; i < this->currentShots; i++){
+
+							if(autoFireAll == true){
+
+								//Auto fire
+								this->autoFire();
+
+							}else{
+
+								//Manual Fire
+
+								bool currentShot = true;
+
+								while(currentShot){
+
+									if(this->gameMode == "salvo"){
+										
+										string shotWording = "shot";
+
+										if(this->currentShots - i > 1){
+											
+											shotWording = "shots";
+										
+										}
+
+										cout << this->currentPlayerLabel << " you have " << this->currentShots - i << " " << shotWording << " remaining please enter a coordinate to fire shot at e.g (A5) : ";
+
+									}else{
+
+										cout << this->currentPlayerLabel << " please enter a coordinate to fire at e.g (A5) : ";
+
+									}
+
+									string input = this->getInput();
+
+									//Check if current shot was valid
+									if(this->player1.getFleetBoard().isValidCoordinateFormat(input)){
+
+										if(this->activePlayer == 1){
+											
+											//Convert inputCoordinate into valid X and Y indexs
+											int xIndex = this->player1.getFleetBoard().convertCoordinateToIndex(input, 'x');
+											int yIndex = this->player1.getFleetBoard().convertCoordinateToIndex(input, 'y');
+
+											//Player 2 needs to handle the shot player 1 just fired
+											string response = this->player2.handleShotFiredAt(xIndex, yIndex, this->player1.getName());
+
+											cout << endl;
+
+											if(response != "invalid"){
+
+												//Player 2 records their successful shot
+												this->player1.recordShotFired(xIndex, yIndex, response);
+
+												currentShot = false;
+
+											}else{
+												
+												cout << "Invalid Shot, please try again" << endl << endl;
+											
+											}
+										
+										}else{
+											
+											//Convert inputCoordinate into valid X and Y indexs
+											int xIndex = this->player1.getFleetBoard().convertCoordinateToIndex(input, 'x');
+											int yIndex = this->player1.getFleetBoard().convertCoordinateToIndex(input, 'y');
+
+											//Player 1 needs to handle the shot player 2 just fired
+											string response = this->player1.handleShotFiredAt(xIndex, yIndex, this->player2.getName());
+
+											cout << endl;
+
+											if(response != "invalid"){
+
+												//Player 2 records their successful shot
+												this->player2.recordShotFired(xIndex, yIndex, response);
+
+												currentShot = false;
+
+											}else{
+
+												cout << "Invalid Shot, please try again" << endl << endl;
+
+											}
+										}
+
+									}else if(input == "auto-fire"){
+										
+										//Auto Fire
+										this->autoFire();
+										
+										currentShot = false;
+
+									}else if(input == "auto-fire all"){
+										
+										//Auto Fire current shot
+										this->autoFire();
+
+										//Set auto fire all to true so all subsequent shots fire automatically
+										autoFireAll = true;
+
+										currentShot = false;
+
+									}else if(input == "help"){
+										
+										cout << "Additional Player Commands: " << endl 
+										<< "\"auto-fire\" - Fires current shot at random" << endl;
+
+										if(this->gameMode == "salvo"){
+
+											cout << "\"auto-fire all\" - Fires all remaining shots at random" << endl;
+										
+										}
+
+										cout << "\"see target board\" - Displays board tracking previous shots" << endl
+										<< "\"see fleet\" - Displays Fleet Board" << endl
+										<< "\"quit\" - Quits the game" << endl << endl;
+										
+									}else if(input == "see fleet"){
+
+										if(this->activePlayer == 1){
+
+											this->player1.getFleetBoard().printBoard();
+										
+										}else{
+											
+											this->player2.getFleetBoard().printBoard();
+										}
+
+									}else if(input == "see target board"){
+
+										if(this->activePlayer == 1){
+
+											this->player1.getTargetBoard().printBoard();
+										
+										}else{
+											
+											this->player2.getTargetBoard().printBoard();
+										
+										}
+
+									}else if(input == "quit"){
+
+										currentShot = false;
+
+										//Break out of shots Loop
+										i = this->currentShots + 2;
+
+										this->gameState = "quit";
+
+									}else{
+
+										cout << "Invalid command please try again." << endl << endl;
+
+									}
+
+								}
+
+							}
+
+							//Check for player's Death
+							if(this->player1.isAlive() == false){
+								
+								//Break out of shots Loop
+								i = this->currentShots + 2;
+								
+								this->winningPlayerLabel = this->player2.getName();
+
+								cout << this->player1.getName() << " has been defeated !" << endl << endl;
+
+								//player 2 is dead
+								this->gameState = "victory";
+
+
+							}else if(this->player2.isAlive() == false){
+
+								//Player 2 is dead
+								//Break out of shots Loop
+								i = this->currentShots + 2;
+								
+								this->winningPlayerLabel = this->player1.getName();
+								
+								cout << this->player2.getName() << " has been defeated !" << endl << endl;
+
+								//player 1 is dead
+								this->gameState = "victory";
+
+							}
+
+						}
+
+						if(this->activePlayer == 1){
+								
+							//Player 1's turn is over set player 2 to the active player
+							this->activePlayer = 2;
+						
+						}else{
+							
+							//Player 2's turn is over set player 1 to the active player
+							this->activePlayer = 1;
+						
+						}
+
+						//Don't pause if player has selected quit 
+						if(this->gameState != "quit"){
+							
+							//Pause the game
+							this->pause();
+						
+						}
+
+					}
 
         }
 
@@ -1464,6 +1895,19 @@ class Game{
           return 0;
 
         }
+
+				if(this->gameState == "victory"){
+
+          cout << "/========================================================/" << endl << endl;
+					cout << "  CONGRATULATIONS " << this->winningPlayerLabel << ", YOU'RE WINNER" << endl;
+					cout << "/========================================================/" << endl << endl;
+          
+					this->pause();
+
+					return 0;
+
+        }
+
 
       }
 

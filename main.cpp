@@ -7,9 +7,10 @@
 using namespace std;
 
 void test() {
-  
   //Create a Game
   Game game;
+
+	
 
   Board testBoard = Board(10,10);
   Ship testShip = Ship(5,"B");

@@ -1,0 +1,146 @@
+######Welcome to Adaships#####
+Rowan Priest Advanced Programming Module Assessment Part 2
+
+####Link to repl.it####
+
+https://replit.com/@RowanPriest/RowanPriestAPBattleshipAssignment#READ.me
+
+####Link to github####
+
+####Using the ada_config.ini file####
+
+To include customisation in Adaships we have an option of customising the 'adaships_config.ini' file in order to change the size of board and of the ships for gameplay.
+
+ada_config.ini file is set out like so: 
+####
+
+Board:10x10
+Boat:Carrier,5
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+If you would like to change the board dimensions (x,y) from 10x10 to 20x20 you would change 
+
+Board:10x10
+
+to 
+
+Board:20x20
+
+and the file will now look like 
+
+####
+
+Board:20x20
+Boat:Carrier,5
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+If you would like to change the Carrier boat from '5' squares in size to '4' squares in size 
+
+Boat:Carrier,5
+
+to
+
+Boat:Carrier,4
+
+and the file will now look like
+
+####
+
+Board:20x20
+Boat:Carrier,4
+Boat:Battleship,4
+Boat:Destroyer,3
+Boat:Submarine,3
+Boat:Patrol Boat,2
+
+####
+
+Any changes made to the ada_config.ini file will update the next time you run the program 
+
+
+###Problem###
+The problem presented from the client was to create a working version of the game 'Battleships' named Ada Ships.
+
+##AdaShips should play as follows##
+User (Player 1) will be using the console to place ships or auto-place ships onto a board based on the coordinates on the board visual on the console. The user will be able to select from a menu to play against a computer (AI) or against another user (Player 2). The computer will automatically place ships on their own board or the other user (Player 2) will place their ships on their own board (Player 1 will not see this board nor will Player 2 see Player 1's board).
+
+Each player will take it in turns to target a coordinate in order to hit their opponents ship, ensuring the user hits each part of the users ship in order to 'sink' it. This continues until a player sinks the opponents ships, who is then decalred the winner.
+
+##The requirements are as follows##
+- User runs program on console to play Adaships
+- User has a menu displayed on console to be able to select game options 
+- Adaships should allow 'Player vs Computer' mode 
+- Player should be able to place their ship pieces manually vis inputting a coordinate
+- Player should be able to select an auto-place option that will automatically place ships for the player
+- Player should be able to view their display board with their ships 
+- Computer player should have their own display board that isn't visible to the user(player1)
+- User should have a second visible board to represent the computers board without showing the computers ship placements. 
+- The computer player display board for the user should display the squares on the board the user has already targeted
+- The displayed computer player board for the user should distinguish between a 'hit' target (hitting a ship) with 'H' and a missed target with a 'M'
+- When the user has hit every part of one of the opponents ships, the user is notified that they have sunk a ship 
+- When the computer has hit every part of one of the users ships, the user is notified that one of their ships has been sunk 
+- When the user has sunk the computers final ship, it will be game over and the user wins
+- When a winner has been decided, the user has the option to replay or to quit 
+- The user has the option quit at anytime 
+- The user is able to edit the ada_config file to adjust the board and ship sizes  
+
+###B.Design Solution###
+Initial design solution flow chart: **link**
+
+
+###C. Initial working plan###
+The working plan was to to take an agile, iterative approach towards the problem. The initial requirements were listed out and solutions to the problems were identified. 
+The first stage was to create a UML diagram outlying the first iteration of the user journey to help identify aspects of the game that need to be built and how each aspect interacts with each other. 
+Using an iterative approach, we took the initial identified aspects and aimed for different levels of implementation including: MVP, iteration # and finished product. 
+
+MVP is creating that part of the project so it is a minimal viable product, it is able to minimally solve the problem. Once the MVP is implemented, then further iterations are done to ensure bugs/errors are caught as early as possible and encourages testing as often as possible. 
+Although an idea of how the final version of the part should look like however through the iterative process; more features, requirements or even better ways of implementing the part of the solution have been found.
+
+The next stage was to outline the various parts/ game mechanics that are required which are:
+- Board class 
+- Ship class
+- Ada_config file 
+- auto placing ships
+- manual placing ships 
+- creating computer AI 
+- menu 
+
+Then a kanban board was created listed each part of the solution along with requirements for each part to keep track of where I was with each part and clearly put any issues or changes along with understanding what do to every time I returned to the project. 
+
+###D. Analysis and Decomposition into key 'Epic' style tasks###
+During this project, an agile approach was taken in order to design a solution. A kanban board was created in order to have the main aspects of the project as 'Epics' with 'stories' and 'sub-tasks'. Stories being tasks with results that the user would see/be part of (ie: board being shown on console) and subtask being a 'backend' task (ie: creating a player class)
+The link to the final kanban is below detailing my epic breakdown along with stories/sub-tasks
+Link to final kanban board: **link**
+
+
+###E.Initial object oreintated designs ideas###
+
+ 
+####Section 2####
+
+###A. Adoption and use of 'good' standards###
+
+###B/C/D Development phases###
+
+##Initial Phase##
+
+##Phase 2##
+
+##Final Phase##
+
+###E. Testing and resolving bugs###
+
+###F. Reflection on key design challenges and how I solved them###
+issue
+-  randomly placing ships - changing random number - had to change it from seconds to nanoseconds
+ 
