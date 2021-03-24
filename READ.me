@@ -188,13 +188,29 @@ For the game modes, battleships classic was the first game mode implemented as i
 
 When creating the board class, the next phase was to include labels, ensure the board printed on the console was aligned and to implement converting the lettered coordinates along the columns was recognised when a coordinate was input, for example; Column A was recognised by the program as column 1 (the first column) so when a user input 'A1' the program would then know it's the square on row 1/column 1. 
 
-In the next phase of implementing ships, I had the ship be able to register hits then if the hits is equal to the ships size it will be a 'sunk' ship. Also implemented was the autoplace feature whereby each ship can be auto-placed individually. 
+In the next phase of implementing ships, I had the ship be able to register hits then if the hits is equal to the ships size it will be a 'sunk' ship. Also implemented was the autoplace feature whereby each ship can be auto-placed individually.
+
+The ada_config file was created and a separate config header file was created with functions to store the values in the config file as a variable. 
+
+Player 2 as a human was implemented allowing for player 1 and player 2 to have different display boards with their placed ships and alternating turns in game. 
+
+Second phase of menu was to implement a help menu when the user typed help, it would show a menu. Included more options availiable and refatored output to make it look tidier on the console. 
+
+Implemented the Salvo mode which works simililarly to classic mode however it allows multiple shots in one turn in correlation to how many ships the player has remaining. This included adding auto-fire all feature, registering multiple shots instead of one. accounting for 'x shots remaining' and '1 shot remaining' printed on the console. 
+
+Different game states were implemented at this stage to let the program know what state the game is in and run the program accordingly. This allowed for easier looping of the code and ability to change states for example: game mode, game state, quit. 
 
 
 
 ##Final Phase##
 
-Final phase of creating the board was to allow it's width and height values be taken from the config file, not from being hard coded in. To allow ships placed to show on the board as well as hit and miss markers to show on the board. 
+Final phase of creating the board was to allow it's width and height values be taken from the config file, not from being hard coded in. To allow ships placed to show on the board as well as hit and miss markers to show on the board. Board included coordinate labels. 
+
+For ships, auto place and auto place all is finalised. Ships labels were ammended to show if parts were hit during gameplay. Allowed for players to input a coordinate to target a place on the opponents board. 
+
+Menu features included pause for when the computer player was implementing an action. Further refactoring for clarity on the console. Ensuring to account for any invalid inputs/edge cases as well as a menu for salvo mode and further help menus. 
+
+Ada_config functions moved to game.h file and player can now customise the board and ship sizes. 
 
 ###E/F Testing and resolving bugs + key design challenge, how I solved them###
 
