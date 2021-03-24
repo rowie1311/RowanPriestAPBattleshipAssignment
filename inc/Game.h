@@ -425,6 +425,9 @@ class Game{
 
         //User selects the game mode
         while(this->gameState == "selectMode"){
+
+					//bs-015 
+					cout << gameState;
           
           cout << "Please select a game mode (to select a game mode input the corresponding number):" << endl << endl
           << "1. Classic Battleships - 1 Shot Per turn, you better make it count!" << endl
